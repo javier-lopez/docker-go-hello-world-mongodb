@@ -1,0 +1,8 @@
+*.retry
+.DS_Store
+*.swp
+mongodb-data
+__pycache__
+.env
+gin-bin
+vendor

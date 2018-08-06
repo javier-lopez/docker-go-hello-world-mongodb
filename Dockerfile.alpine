@@ -1,0 +1,21 @@
+FROM golang:1.10-alpine AS builder
+
+RUN  apk add --no-cache git
+#RUN apk add --no-cache gcc musl-dev libffi-dev libev-dev
+
+WORKDIR /go/src/app/
+COPY    app/ .
+
+RUN go get github.com/codegangsta/gin   #hot reloading
+RUN go get -u github.com/golang/dep/... #deps management
+RUN dep ensure --vendor-only
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app .
+
+#FROM scratch
+#COPY --from=builder /app ./
+#ENTRYPOINT ["./app"]
+
+EXPOSE 5001
+CMD ["gin", "--port", "5001", "--all", "run"]
+
+#  vim: set ts=8 sw=4 tw=0 ft=dockerfile :
